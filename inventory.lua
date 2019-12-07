@@ -43,7 +43,7 @@ simplecrafting_lib.room_for_items = function(inv, listname, count_list)
 	local old_list = inv:get_list(listname) -- record current inventory
 	local result = add_count_list(inv, listname, count_list)
 	inv:set_list(listname, old_list) -- reset inventory
-	return result ~= nil
+	return result == nil
 end
 
 -- removes the items in the count_list (formatted as per recipe standards)
