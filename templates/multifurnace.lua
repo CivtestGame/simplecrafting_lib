@@ -31,7 +31,7 @@ if multifurnace_def.hopper_node_name and minetest.get_modpath("hopper") and hopp
 		{"bottom", multifurnace_def.hopper_node_name, "input"},
 		{"side", multifurnace_def.hopper_node_name, "fuel"},
 	})
-	
+
 	if multifurnace_def.active_node then
 		hopper:add_container({
 			{"top", multifurnace_def.active_node, "output"},
@@ -59,7 +59,7 @@ local function refresh_formspec(pos)
 	local total_burn_time = meta:get_float("total_burn_time") or 0.0
 	local product_count = meta:get_int("product_count") or 0
 	local count_mode = get_count_mode(meta)
-	
+
 	local item_percent
 	if total_cook_time > 0 then item_percent = math.floor((math.min(cook_time, total_cook_time) / total_cook_time) * 100) else item_percent = 0 end
 	local burn_percent
@@ -70,7 +70,7 @@ local function refresh_formspec(pos)
 
 		"list[context;input;0,0.25;4,2;]",
 		"list[context;fuel;0,2.75;4,2]",
-		
+
 		"image[4.5,0.7;1,1;gui_furnace_arrow_bg.png^[lowpart:"..(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]",
 		"image[4.5,3.3;1,1;default_furnace_fire_bg.png^[lowpart:"..(burn_percent)..":default_furnace_fire_fg.png]",
 
@@ -78,13 +78,13 @@ local function refresh_formspec(pos)
 
 		"list[current_player;main;1,5;8,1;0]",
 		"list[current_player;main;1,6.2;8,3;8]",
-		
+
 		"listring[context;output]",
 		"listring[current_player;main]",
 		"listring[context;input]",
 		"listring[current_player;main]",
 		"listring[context;fuel]",
-		"listring[current_player;main]",		
+		"listring[current_player;main]",
 	}
 
 	if count_mode then
@@ -94,13 +94,13 @@ local function refresh_formspec(pos)
 			inventory[#inventory+1] = "button[9,7.5;1,0.75;count_mode;"..S("Endless\nOutput").."]"
 		end
 	elseif multifurnace_def.lock_in_mode == nil then
-		inventory[#inventory+1] = "button[9,7.5;1,0.75;count_mode;"..S("Counted\nOutput").."]"	
+		inventory[#inventory+1] = "button[9,7.5;1,0.75;count_mode;"..S("Counted\nOutput").."]"
 	end
-	
+
 	if multifurnace_def.description then
 		inventory[#inventory+1] = "label[4.5,0;"..multifurnace_def.description.."]"
 	end
-	
+
 	if modpath_default then
 		inventory[#inventory+1] = default.gui_bg
 		inventory[#inventory+1] = default.gui_bg_img
@@ -123,7 +123,7 @@ local function refresh_formspec(pos)
 	local product_list = minetest.deserialize(meta:get_string("product_list"))
 	local product_page = meta:get_int("product_page") or 0
 	local max_pages = math.floor((#product_list - 1) / product_count)
-	
+
 	if product_page > max_pages then
 		product_page = max_pages
 		meta:set_int("product_page", product_page)
@@ -131,13 +131,13 @@ local function refresh_formspec(pos)
 		product_page = 0
 		meta:set_int("product_page", product_page)
 	end
-	
+
 	local pages = false
 	if product_page > 0 then
-		inventory[#inventory+1] = "button[6.0,2.5;1,0.1;prev_page;<<]"	
+		inventory[#inventory+1] = "button[6.0,2.5;1,0.1;prev_page;<<]"
 	end
 	if product_page < max_pages then
-		inventory[#inventory+1] = "button[9.0,2.5;1,0.1;next_page;>>]"			
+		inventory[#inventory+1] = "button[9.0,2.5;1,0.1;next_page;>>]"
 	end
 	if pages then
 		inventory[#inventory+1] = "label[9.3,2.5;" .. S("Page @1", tostring(product_page)) .. "]"
@@ -156,15 +156,15 @@ local function refresh_formspec(pos)
 			";1,1;;empty;]"
 		end
 	end
-	
+
 	if multifurnace_def.show_guides then
 		inventory[#inventory+1] = "button[9.0,8.3;1,0.75;show_guide;"..S("Show\nGuide").."]"
 	end
-	
+
 	if multifurnace_def.append_to_formspec then
 		inventory[#inventory+1] = table_def.append_to_formspec
 	end
-	
+
 	meta:set_string("formspec", table.concat(inventory))
 	meta:set_string("infotext", multifurnace_def.get_infotext(pos))
 end
@@ -191,7 +191,7 @@ local function on_timer(pos, elapsed)
 	local count_mode = get_count_mode(meta)
 
 	local target_item = meta:get_string("target_item")
-	
+
 	local recipe
 	local room_for_items = false
 	local output
@@ -206,10 +206,10 @@ local function on_timer(pos, elapsed)
 			end
 		end
 	end
-	
+
 	cook_time = cook_time + elapsed
 	burn_time = burn_time - elapsed
-	
+
 	if recipe == nil or not room_for_items or (product_count <= 0 and count_mode) then
 		-- we're not cooking anything.
 		cook_time = 0.0
@@ -228,18 +228,21 @@ local function on_timer(pos, elapsed)
 				local longest_burning
 				for _, fuel_recipe in pairs(fuel_recipes) do
 					local recipe_burntime = fuel_recipe.burntime or 0
-					if longest_burning == nil or longest_burning.output:get_count() < recipe_burntime then
+					if longest_burning == nil
+						or longest_burning.output
+							and longest_burning.output:get_count() < recipe_burntime
+					then
 						longest_burning = fuel_recipe
 					end
 				end
-						
+
 				if longest_burning then
                                         total_burn_time = longest_burning.burntime or 1
 					burn_time = burn_time + total_burn_time
 					local success = true
 					if longest_burning.returns then
 						success = simplecrafting_lib.add_items_if_room(inv, "output", longest_burning.returns) and
-							simplecrafting_lib.room_for_items(inv, "output", output)						
+							simplecrafting_lib.room_for_items(inv, "output", output)
 					end
 					if success then
 						for item, count in pairs(longest_burning.input) do
@@ -285,8 +288,8 @@ local function on_timer(pos, elapsed)
 
 	meta:set_float("burn_time", burn_time)
 	meta:set_float("total_burn_time", total_burn_time)
-	meta:set_float("cook_time", cook_time)	
-	meta:set_float("total_cook_time", total_cook_time)	
+	meta:set_float("cook_time", cook_time)
+	meta:set_float("total_cook_time", total_cook_time)
 
 	refresh_formspec(pos)
 end
@@ -379,7 +382,7 @@ local function allow_metadata_inventory_move(pos, from_list, from_index, to_list
 	local meta = minetest.get_meta(pos)
 	local inv = meta:get_inventory()
 	local stack = inv:get_stack(from_list, from_index)
-	return math.min(allow_metadata_inventory_put(pos, to_list, to_index, stack, player), 
+	return math.min(allow_metadata_inventory_put(pos, to_list, to_index, stack, player),
 		allow_metadata_inventory_take(pos, from_list, from_index, stack, player))
 end
 
@@ -414,7 +417,7 @@ local can_dig = function(pos, player)
 	local inv = meta:get_inventory()
 	return inv:is_empty("output") and inv:is_empty("fuel") and inv:is_empty("input")
 end
-	
+
 local on_receive_fields = function(pos, formname, fields, sender)
 	local meta = minetest.get_meta(pos)
 	local product_list = minetest.deserialize(meta:get_string("product_list"))
@@ -436,16 +439,16 @@ local on_receive_fields = function(pos, formname, fields, sender)
 			end
 		end
 	end
-	
+
 	if fields.show_guide and multifurnace_def.show_guides then
 		simplecrafting_lib.show_crafting_guide(craft_type, sender)
 	end
-	
+
 	if fields.product_count ~= nil then
 		meta:set_int("product_count", math.max((tonumber(fields.product_count) or 0), 0))
 		refresh = true
 	end
-	
+
 	if fields.count_mode then
 		if meta:get_string("count_mode") == "" then
 			meta:set_string("count_mode", "true")
@@ -454,19 +457,19 @@ local on_receive_fields = function(pos, formname, fields, sender)
 		end
 		refresh = true
 	end
-	
+
 	if fields.next_page then
 		meta:set_int("product_page", meta:get_int("product_page") + 1)
 		refresh = true
 	elseif fields.prev_page then
-		meta:set_int("product_page", meta:get_int("product_page") - 1)	
+		meta:set_int("product_page", meta:get_int("product_page") - 1)
 		refresh = true
 	end
-	
+
 	if refresh then
 		refresh_formspec(pos)
 	end
-	
+
 	on_timer(pos, 0)
 end
 
@@ -483,17 +486,17 @@ local function default_infotext(pos)
 		local craft_time = meta:get_float("cook_time") or 0.0
 		local total_craft_time = meta:get_float("total_cook_time") or 0.0
 		local item_percent
-		if total_craft_time > 0 then item_percent = math.floor((math.min(craft_time, total_craft_time) / total_craft_time) * 100) else item_percent = 0 end	
+		if total_craft_time > 0 then item_percent = math.floor((math.min(craft_time, total_craft_time) / total_craft_time) * 100) else item_percent = 0 end
 
 		infotext = infotext .. "\n" .. S("@1% done crafting @2", item_percent, minetest.registered_items[target].description or target)
-		
+
 		if get_count_mode(meta) then
 			local product_count = meta:get_int("product_count") or 0
 			infotext = infotext .. "\n" .. S("@1 remaining to do", product_count)
 		end
 	end
-	
-	return infotext	
+
+	return infotext
 end
 multifurnace_def.get_infotext = multifurnace_def.get_infotext or default_infotext
 
