@@ -76,9 +76,14 @@ local function refresh_formspec(pos)
 
 		"list[context;output;6,0.25;4,2;]",
 
-		"list[current_player;main;1,5;8,1;0]",
-		"list[current_player;main;1,6.2;8,3;8]",
+		sfinv.get_inventory_area_formspec(5),
 
+		"listring[context;output]",
+		"listring[current_player;main2]",
+		"listring[context;input]",
+		"listring[current_player;main2]",
+		"listring[context;fuel]",
+		"listring[current_player;main2]",
 		"listring[context;output]",
 		"listring[current_player;main]",
 		"listring[context;input]",

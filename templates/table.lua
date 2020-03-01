@@ -223,6 +223,8 @@ local on_metadata_inventory_take = function(pos, list_name, index, stack, player
 			local player_inv = player:get_inventory()
 			if player_inv:room_for_item("main", input_stack) then
 				player_inv:add_item("main", input_stack)
+			elseif player_inv:room_for_item("main2", input_stack) then
+				player_inv:add_item("main2", input_stack)
 			end
 		end
 		simplecrafting_lib.craft_stack(craft_type, stack, inv, "input", player:get_inventory(), "main", player)
