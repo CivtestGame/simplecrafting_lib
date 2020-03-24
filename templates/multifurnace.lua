@@ -319,7 +319,7 @@ local function allow_metadata_inventory_put(pos, listname, index, stack, player)
 	if multifurnace_def.protect_inventory and
 		player ~= _pipeworks_override_player and
 		minetest.is_protected(pos, player:get_player_name())
-		and not minetest.check_player_privs(player:get_name(), "protection_bypass") then
+		and not minetest.check_player_privs(player:get_player_name(), "protection_bypass") then
 		return 0
 	end
 	if listname == "input" then
@@ -377,7 +377,7 @@ end
 local function allow_metadata_inventory_take(pos, listname, index, stack, player)
 	if multifurnace_def.protect_inventory and
 		minetest.is_protected(pos, player:get_player_name())
-		and not minetest.check_player_privs(player:get_name(), "protection_bypass") then
+		and not minetest.check_player_privs(player:get_player_name(), "protection_bypass") then
 		return 0
 	end
 	return stack:get_count()
