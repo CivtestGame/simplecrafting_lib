@@ -32,7 +32,7 @@ local function reduce_recipe(def)
 		table.insert(list, count)
 	end
 	if def.output then
-		table.insert(list, ItemStack(def.output):get_count())
+		table.insert(list, def.output:get_count())
 	end
 	if def.returns then
 		for _, count in pairs(def.returns) do
@@ -135,6 +135,14 @@ end
 simplecrafting_lib.register = function(craft_type, def)
 	def.input = def.input or {}
 
+	local output_name
+	if def.output then
+		def.output = ItemStack(def.output)
+		output_name = def.output:get_name()
+	else
+		output_name = "none" -- special value for recipes with no output. Shouldn't conflict with group:none since output can't be a group
+	end
+
 	reduce_recipe(def)
 	strip_groups(def)
 
@@ -143,13 +151,7 @@ simplecrafting_lib.register = function(craft_type, def)
 	-- Check if this recipe has already been registered. Many different old-style recipes
 	-- can reduce down to equivalent recipes in this system, so this is a useful step
 	-- to keep things tidy and efficient.
-	local output_name
-	if def.output then
-		def.output = ItemStack(def.output)
-		output_name = def.output:get_name()
-	else
-		output_name = "none" -- special value for recipes with no output. Shouldn't conflict with group:none since output can't be a group
-	end
+
 	local existing_recipes = crafting_info.recipes_by_out[output_name]
 	if existing_recipes ~= nil then
 		for _, existing_recipe in pairs(existing_recipes) do
