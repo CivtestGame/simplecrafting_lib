@@ -132,7 +132,8 @@ simplecrafting_lib.recipe_equals = function(recipe1, recipe2)
 	return true
 end
 
-simplecrafting_lib.register = function(craft_type, def)
+--GCD = greatest common demoninator.
+simplecrafting_lib.register = function(craft_type, def, gcd)
 	def.input = def.input or {}
 
 	local output_name
@@ -143,7 +144,9 @@ simplecrafting_lib.register = function(craft_type, def)
 		output_name = "none" -- special value for recipes with no output. Shouldn't conflict with group:none since output can't be a group
 	end
 
-	reduce_recipe(def)
+	if gcd then
+		reduce_recipe(def)
+	end
 	strip_groups(def)
 
 	local crafting_info = simplecrafting_lib.get_crafting_info(craft_type)
