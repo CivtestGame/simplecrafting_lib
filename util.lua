@@ -349,6 +349,9 @@ simplecrafting_lib.get_crafting_result = function(craft_type, input_list, reques
 	local smallest_remainder = math.huge
 	local smallest_remainder_output_count = 0
 	local smallest_remainder_recipe = nil
+	if not recipes then
+		return
+	end
 	for i = 1, #recipes do
 		local number, recipe = get_craft_count(input_count, recipes[i])
 		if number > 0 then
