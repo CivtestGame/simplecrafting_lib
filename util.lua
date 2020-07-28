@@ -30,7 +30,7 @@ local function split(str, delimiter)
 end
 
 -- I apologise for this function.
--- From the items in groupset, checks input_list to find the item 
+-- From the items in groupset, checks input_list to find the item
 -- with the highest count and adds it to required_input
 local function get_highest_count_item_for_group(groupset, input_list, required_input, count)
 	local highest_item_name
@@ -43,7 +43,7 @@ local function get_highest_count_item_for_group(groupset, input_list, required_i
 	end
 	if highest_item_count == 0 then
 		return false
-	end			
+	end
 	required_input[highest_item_name] = (required_input[highest_item_name] or 0) + count
 	return true
 end
@@ -75,7 +75,7 @@ local function get_craft_count(input_list, recipe)
 					multigroup_itemset = {}
 					for multigroup_item, _ in pairs(input_list[group]) do
 						multigroup_itemset[multigroup_item] = true
-					end				
+					end
 				else
 					local intersect = {}
 					for multigroup_item, _ in pairs(input_list[group]) do
@@ -84,9 +84,9 @@ local function get_craft_count(input_list, recipe)
 						end
 					end
 					multigroup_itemset = intersect
-				end				
+				end
 			end
-			
+
 			if not get_highest_count_item_for_group(multigroup_itemset, input_list, required_input, count) then
 				return 0
 			end
@@ -134,7 +134,7 @@ end
 -- Unlikely to be needed, though - it'd take a lot of work for users to get into this bit of trouble.
 simplecrafting_lib.deep_copy = function(recipe_in)
 	local recipe_out = {}
-	
+
 	for index, value in pairs(recipe_in) do
 		if type(value) == "table" then
 			recipe_out[index] = simplecrafting_lib.deep_copy(value)
@@ -173,7 +173,7 @@ end
 -- or group.
 simplecrafting_lib.is_fuel = function(craft_type, item)
 	local fuels = simplecrafting_lib.get_crafting_info(craft_type).recipes_by_in
-	
+
 	-- First check if the item has been explicitly registered as fuel
 	if fuels[item] then
 		return fuels[item][#fuels[item]]
@@ -223,7 +223,7 @@ end
 simplecrafting_lib.get_craftable_recipes = function(craft_type, item_list)
 	local count_list = itemlist_to_countlist(item_list)
 	local craftable = {}
-	local recipes = simplecrafting_lib.type[craft_type].recipes	
+	local recipes = simplecrafting_lib.type[craft_type].recipes
 	for i = 1, #recipes do
 		local number, recipe = get_craft_count(count_list, recipes[i])
 		if number > 0 then
@@ -243,7 +243,7 @@ simplecrafting_lib.get_craftable_items = function(craft_type, item_list, max_cra
 	local craftable_count_list = {}
 	local craftable_stacks = {}
 	local chosen_recipe = {}
-	local recipes = simplecrafting_lib.type[craft_type].recipes	
+	local recipes = simplecrafting_lib.type[craft_type].recipes
 	for i = 1, #recipes do
 		local number, recipe = get_craft_count(count_list, recipes[i])
 		if number > 0 then
@@ -280,11 +280,11 @@ end
 -- recipe belonging to the given craft type
 simplecrafting_lib.is_possible_input = function(craft_type, item_name)
 	local info = simplecrafting_lib.get_crafting_info(craft_type)
-	
+
 	if info.recipes_by_in[item_name] then
 		return true -- that was easy.
 	end
-	
+
 	-- Now for the group checks. :(
 	local item_def = minetest.registered_items[item_name]
 	if not item_def then return false end -- undefined item
@@ -325,7 +325,7 @@ simplecrafting_lib.count_list_add = function(list1, list2)
 		if type(count) == "table" then
 			-- item is actually a group name, it has a set of items associated with it.
 			-- Perform a union with existing set.
-			out_list[item] = out_list[item] or {}			
+			out_list[item] = out_list[item] or {}
 			for group_item, _ in pairs(count) do
 				out_list[item][group_item] = true
 			end
@@ -360,7 +360,7 @@ simplecrafting_lib.get_crafting_result = function(craft_type, input_list, reques
 				smallest_remainder = request_count % output_count
 				smallest_remainder_output_count = output_count
 				smallest_remainder_recipe = recipe
-			end			
+			end
 		end
 	end
 

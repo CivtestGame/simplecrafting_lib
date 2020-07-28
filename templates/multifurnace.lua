@@ -170,6 +170,22 @@ local function refresh_formspec(pos)
 		inventory[#inventory+1] = table_def.append_to_formspec
 	end
 
+	if not multifurnace_def.hide_fuel then
+		-- craft_type, fuel_type, multifurnace_def
+		local fuels = simplecrafting_lib.get_crafting_info(fuel_type).recipes_by_in
+
+                inventory[#inventory+1] = "label[8.0, 5.0;Valid Fuels]"
+
+                local ypos = 5.5
+                for k,v in pairs(fuels) do
+                   local fuelname = k:split(":")[2] or k
+                   local fueltime = (v[1] and v[1].burntime) or "?"
+                   inventory[#inventory+1] = "label[8.1,"..tostring(ypos)
+                      .. ";"..fuelname.." ("..tostring(fueltime)..")]"
+                   ypos = ypos + 0.5
+                end
+	end
+
 	meta:set_string("formspec", table.concat(inventory))
 	meta:set_string("infotext", multifurnace_def.get_infotext(pos))
 end
