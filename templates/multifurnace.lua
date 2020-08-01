@@ -19,6 +19,19 @@ local modpath_default = minetest.get_modpath("default")
 
 simplecrafting_lib.generate_multifurnace_functions = function(craft_type, fuel_type, multifurnace_def)
 
+local outputs = simplecrafting_lib.get_crafting_info(craft_type).recipes_by_out
+if craftguide then
+   local factory_node = multifurnace_def.active_node
+      or "civindustry:"..craft_type
+
+   for k, v in pairs(outputs) do
+      craftguide.register_craft({
+            result = k,
+            items  = { factory_node },
+      })
+   end
+end
+
 if multifurnace_def == nil then
 	multifurnace_def = {}
 end
