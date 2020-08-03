@@ -232,7 +232,17 @@ local function on_timer(pos, elapsed)
 	if target_item ~= "" then
 		recipe = simplecrafting_lib.get_crafting_result(craft_type, inv:get_list("input"), ItemStack({name=target_item, count=1}))
 		if recipe then
-			output = simplecrafting_lib.count_list_add({[recipe.output:get_name()]=recipe.output:get_count()}, recipe.returns)
+                        -- Add the largest of any potential random_returns
+			if recipe.random_returns then
+			   output = simplecrafting_lib.random_returns_to_countlist(
+                                 recipe.random_returns
+                           )
+			else
+                           output = simplecrafting_lib.count_list_add(
+                              simplecrafting_lib.itemstack_to_countlist(recipe.output), recipe.returns
+                           )
+                        end
+
 			room_for_items = simplecrafting_lib.room_for_items(inv, "output", output)
 			total_cook_time = recipe.cooktime or recipe.input["simplecrafting_lib:heat"] or 1
 			if multifurnace_def.crafting_time_multiplier then
@@ -278,6 +288,11 @@ local function on_timer(pos, elapsed)
 						success = simplecrafting_lib.add_items_if_room(inv, "output", longest_burning.returns) and
 							simplecrafting_lib.room_for_items(inv, "output", output)
 					end
+
+                                        if longest_burning.random_returns then
+                                           success = success and simplecrafting_lib.room_for_items(inv, "output", output)
+                                        end
+
 					if success then
 						for item, count in pairs(longest_burning.input) do
 							inv:remove_item("fuel", ItemStack({name = item, count = count}))

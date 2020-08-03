@@ -20,6 +20,30 @@ local function itemlist_to_countlist(itemlist)
 	return count_list
 end
 
+simplecrafting_lib.itemstack_to_countlist = function(stack)
+   if not stack then
+      return {}
+   end
+   if type(stack) == "string" then
+      stack = ItemStack(stack)
+   end
+   if stack and stack:is_empty() then
+      return {}
+   end
+
+   return { [stack:get_name()] = stack:get_count() }
+end
+
+simplecrafting_lib.itemstacks_to_countlist = function(stacklist)
+   local out_list = {}
+   for i, stack in ipairs(stacklist) do
+      out_list = simplecrafting_lib.count_list_add(
+         out_list, simplecrafting_lib.itemstack_to_countlist(stack)
+      )
+   end
+   return out_list
+end
+
 -- splits a string into an array of substrings based on a delimiter
 local function split(str, delimiter)
     local result = {}
@@ -312,6 +336,23 @@ end
 -- one recipe belonging to the given craft type
 simplecrafting_lib.is_possible_output = function(craft_type, item_name)
 	return simplecrafting_lib.type[craft_type].recipes_by_out[item_name] ~= nil
+end
+
+simplecrafting_lib.random_returns_to_countlist = function(random_returns)
+   local out_stacks = {}
+
+   local last_rarity = 0
+   for i, spec in ipairs(random_returns) do
+      local spec_rarity = spec.rarity
+      if math.random(spec_rarity) == spec_rarity then
+         if spec_rarity > last_rarity then
+            out_stacks = spec.items
+            last_rarity = spec_rarity
+         end
+      end
+   end
+
+   return simplecrafting_lib.itemstacks_to_countlist(out_stacks)
 end
 
 -- adds two count lists together, returns a new count list with the sum of the parameters' contents
