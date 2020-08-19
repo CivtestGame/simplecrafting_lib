@@ -92,17 +92,21 @@ local function refresh_formspec(pos)
 		sfinv.get_inventory_area_formspec(5),
 
 		"listring[context;output]",
-		"listring[current_player;main2]",
+		"listring[current_player;router]",
+		"listring[context;input]",
+		"listring[current_player;router]",
+		"listring[context;fuel]",
+		"listring[current_player;router]",
+
+		"listring[current_player;main]",
 		"listring[context;input]",
 		"listring[current_player;main2]",
+		"listring[context;input]",
+
+		"listring[current_player;main]",
 		"listring[context;fuel]",
 		"listring[current_player;main2]",
-		"listring[context;output]",
-		"listring[current_player;main]",
-		"listring[context;input]",
-		"listring[current_player;main]",
 		"listring[context;fuel]",
-		"listring[current_player;main]",
 	}
 
 	if count_mode then
