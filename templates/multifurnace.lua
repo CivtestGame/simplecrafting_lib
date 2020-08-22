@@ -30,6 +30,7 @@ if craftguide then
    end
 
    for k, v in pairs(outputs) do
+      -- Register "mock" recipes so craftguide contains them
       minetest.register_craft({
             output = k,
             type = "cooking",
@@ -93,8 +94,8 @@ local function refresh_formspec(pos)
 		"list[context;input;0,0.25;4,2;]",
 		"list[context;fuel;0,2.75;4,2]",
 
-		"image[4.5,0.7;1,1;gui_furnace_arrow_bg.png^[lowpart:"..(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]",
-		"image[4.5,3.3;1,1;default_furnace_fire_bg.png^[lowpart:"..(burn_percent)..":default_furnace_fire_fg.png]",
+		"image[4.5,0.5;1,1;gui_furnace_arrow_bg.png^[lowpart:"..(item_percent)..":gui_furnace_arrow_fg.png^[transformR270]",
+		"image[4.5,2.6;1,1;default_furnace_fire_bg.png^[lowpart:"..(burn_percent)..":default_furnace_fire_fg.png]",
 
 		"list[context;output;6,0.25;4,2;]",
 
@@ -140,9 +141,9 @@ local function refresh_formspec(pos)
 
 	local target = meta:get_string("target_item")
 	if target ~= "" then
-		inventory[#inventory+1] = "item_image_button[4.5,2;1,1;" .. target .. ";target;]"
+		inventory[#inventory+1] = "item_image_button[4.5,1.5;1,1;" .. target .. ";target;]"
 	else
-		inventory[#inventory+1] = "item_image_button[4.5,2;1,1;;;]"
+		inventory[#inventory+1] = "item_image_button[4.5,1.5;1,1;;;]"
 	end
 
 	local product_x_dim = 4
@@ -189,7 +190,7 @@ local function refresh_formspec(pos)
 	end
 
 	if multifurnace_def.show_guides then
-		inventory[#inventory+1] = "button[9.0,8.3;1,0.75;show_guide;"..S("Show\nGuide").."]"
+		inventory[#inventory+1] = "button[4,3.8;2,1;show_guide;"..S("Show\nGuide").."]"
 	end
 
 	if multifurnace_def.append_to_formspec then
