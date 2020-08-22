@@ -19,15 +19,24 @@ local modpath_default = minetest.get_modpath("default")
 
 simplecrafting_lib.generate_multifurnace_functions = function(craft_type, fuel_type, multifurnace_def)
 
-local outputs = simplecrafting_lib.get_crafting_info(craft_type).recipes_by_out
 if craftguide then
-   local factory_node = multifurnace_def.active_node
-      or "civindustry:"..craft_type
+   local outputs = simplecrafting_lib.get_crafting_info(craft_type).recipes_by_out
+
+   local factory_node
+   if multifurnace_def.active_node then
+      factory_node = multifurnace_def.active_node:gsub("_active", "")
+   else
+      factory_node = "civindustry:"..craft_type
+   end
 
    for k, v in pairs(outputs) do
-      craftguide.register_craft({
-            result = k,
-            items  = { factory_node },
+      minetest.register_craft({
+            output = k,
+            type = "cooking",
+            recipe = factory_node,
+
+            -- Ensure that a furnace can't actually cook these recipes :)
+            cooktime = 0
       })
    end
 end
